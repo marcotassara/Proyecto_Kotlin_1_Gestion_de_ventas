@@ -54,4 +54,17 @@ class GestorVentasViewModel : ViewModel() {
             _navigationEvents.emit(NavigationEvent.NavigateTo(Screen.AddProductScreen))
         }
     }
+
+    // Dentro de la clase GestorVentasViewModel
+    fun onLogoutClick() {
+        viewModelScope.launch {
+            _navigationEvents.emit(
+                NavigationEvent.NavigateTo(
+                    route = Screen.LoginScreen,
+                    popUpToRoute = Screen.HomeScreen, // Limpia el historial HASTA HomeScreen
+                    inclusive = true // Le decimos que TAMBIÉN borre HomeScreen del historial
+                )
+            )
+        }
+    }
 }

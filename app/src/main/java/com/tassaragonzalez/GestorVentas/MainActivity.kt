@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
@@ -27,7 +28,7 @@ import com.tassaragonzalez.GestorVentas.views.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
+import androidx.compose.material3.Text
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -68,6 +69,7 @@ class MainActivity : ComponentActivity() {
                             scope = scope
                         )
                     }
+
                 ) {
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
@@ -173,5 +175,16 @@ fun DrawerContent(
                 viewModel.navigateTo(Screen.SettingsScreen)
             }
         )
+        Divider() // Una línea para separar
+        NavigationDrawerItem(
+            label = { Text(text = "Cerrar Sesión") },
+            icon = { Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Cerrar Sesión") },
+            selected = false,
+            onClick = {
+                scope.launch { drawerState.close() }
+                viewModel.onLogoutClick() // Llamamos a la nueva función
+            }
+        )
+        // 👆 --- FIN DEL NUEVO CÓDIGO --- 👆
     }
 }

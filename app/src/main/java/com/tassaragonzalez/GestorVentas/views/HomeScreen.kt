@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tassaragonzalez.GestorVentas.R
+import com.tassaragonzalez.GestorVentas.ui.components.DoublePressBackToExitHandler
 import com.tassaragonzalez.GestorVentas.ui.theme.GestorVentasTheme
 
 // =================================================================================
@@ -31,6 +32,8 @@ import com.tassaragonzalez.GestorVentas.ui.theme.GestorVentasTheme
 // =-===============================================================================
 @Composable
 fun HomeScreen(onLowStockClick: () -> Unit) {
+    DoublePressBackToExitHandler()
+
     val lowStockAlert = Product(
         name = "¡ALERTA! STOCK BAJO",
         price = "Revisar productos críticos",

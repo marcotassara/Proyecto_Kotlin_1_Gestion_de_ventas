@@ -5,11 +5,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.tassaragonzalez.GestorVentas.ui.components.DoublePressBackToExitHandler
 import com.tassaragonzalez.GestorVentas.viewmodels.GestorVentasViewModel
 
 
 @Composable
 fun ProductsScreen(viewModel: GestorVentasViewModel) {
+    DoublePressBackToExitHandler()
     // --- CAMBIO 3: Se eliminó toda la estructura de Scaffold y TopAppBar ---
     // La pantalla ahora solo define su contenido interno.
     Column(
