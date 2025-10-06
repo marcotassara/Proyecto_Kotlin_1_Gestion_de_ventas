@@ -72,33 +72,40 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         topBar = {
-                            // La TopAppBar solo se mostrará si no estamos en Login o Register
+                            // Solo muestra la barra si no estamos en Login o Register
                             if (currentRoute != Screen.LoginScreen.route && currentRoute != Screen.RegisterScreen.route) {
                                 TopAppBar(
                                     title = {
                                         // Título dinámico
                                         when (currentRoute) {
-                                            Screen.AddProductScreen.route -> Text("Agrega tu Producto")
+                                            Screen.AddProductScreen.route -> Text("Agregar Producto")
                                             Screen.HomeScreen.route -> Text("¡Bienvenido a Neg!")
                                             Screen.ProductsScreen.route -> Text("Productos")
+                                            Screen.SettingsScreen.route -> Text("Configuraciones")
+                                            Screen.RegisterClientScreen.route -> Text("Registrar Cliente")
                                             else -> Text("Gestor de Ventas")
                                         }
                                     },
                                     navigationIcon = {
-                                        // Si estamos en una pantalla principal, muestra el menú.
-                                        if (currentRoute == Screen.HomeScreen.route || currentRoute == Screen.ProductsScreen.route) {
+                                        // --- LÓGICA CORREGIDA ---
+                                        // Definimos las pantallas que son "principales" y llevan menú
+                                        val isMainScreen = currentRoute == Screen.HomeScreen.route ||
+                                                currentRoute == Screen.ProductsScreen.route
+
+                                        if (isMainScreen) {
+                                            // Si es una pantalla principal, muestra el Menú
                                             IconButton(onClick = { scope.launch { drawerState.open() } }) {
                                                 Icon(imageVector = Icons.Default.Menu, contentDescription = "Menú")
                                             }
                                         } else {
-                                            // Si estamos en una sub-pantalla, muestra la flecha de "Volver".
+                                            // Para CUALQUIER OTRA pantalla (AddProduct, Settings, etc.), muestra "Volver"
                                             IconButton(onClick = { viewModel.navigateUp() }) {
                                                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                                             }
                                         }
                                     },
                                     actions = {
-                                        // Acciones dinámicas
+                                        // Acciones dinámicas (esto ya lo tenías bien)
                                         if (currentRoute == Screen.ProductsScreen.route) {
                                             IconButton(onClick = { viewModel.navigateTo(Screen.HomeScreen) }) {
                                                 Icon(imageVector = Icons.Default.Home, contentDescription = "Inicio")
@@ -106,10 +113,6 @@ class MainActivity : ComponentActivity() {
                                             IconButton(onClick = { viewModel.navigateTo(Screen.AddProductScreen) }) {
                                                 Icon(imageVector = Icons.Default.Add, contentDescription = "Añadir")
                                             }
-
-
-
-
                                         }
                                     }
                                 )

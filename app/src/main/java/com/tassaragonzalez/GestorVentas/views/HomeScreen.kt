@@ -30,7 +30,7 @@ import com.tassaragonzalez.GestorVentas.ui.theme.GestorVentasTheme
 // --- SECCIÓN 1: La Pantalla Principal ---
 // =-===============================================================================
 @Composable
-fun HomeScreen(onLowStockClick: () -> Unit) { // Solo necesita saber qué hacer al hacer clic
+fun HomeScreen(onLowStockClick: () -> Unit) {
     val lowStockAlert = Product(
         name = "¡ALERTA! STOCK BAJO",
         price = "Revisar productos críticos",
