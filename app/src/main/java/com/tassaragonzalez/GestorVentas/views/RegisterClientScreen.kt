@@ -43,7 +43,7 @@ fun RegisterClientScreen(viewModel: GestorVentasViewModel) {
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { /* En el futuro, aquí llamaremos al ViewModel para guardar el cliente */ },
+            onClick = { },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("OK")

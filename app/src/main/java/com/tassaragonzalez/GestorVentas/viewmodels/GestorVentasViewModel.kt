@@ -48,4 +48,10 @@ class GestorVentasViewModel : ViewModel() {
             _navigationEvents.emit(NavigationEvent.NavigateTo(Screen.RegisterScreen))
         }
     }
+
+    fun onAddProductClick() {
+        viewModelScope.launch {
+            _navigationEvents.emit(NavigationEvent.NavigateTo(Screen.AddProductScreen))
+        }
+    }
 }

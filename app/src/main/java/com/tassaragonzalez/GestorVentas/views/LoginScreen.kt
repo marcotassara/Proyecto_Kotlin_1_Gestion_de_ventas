@@ -53,7 +53,7 @@ fun LoginScreen(viewModel: GestorVentasViewModel) {
             Text("Ingresar")
         }
 
-        // 👇 --- AÑADE ESTE BOTÓN DE TEXTO --- 👇
+
         TextButton(onClick = { viewModel.onRegisterClick() }) { // Llama a una nueva función
             Text("¿No tienes cuenta? Regístrate")
         }

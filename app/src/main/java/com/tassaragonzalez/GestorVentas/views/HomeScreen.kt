@@ -6,16 +6,12 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddShoppingCart
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -28,156 +24,62 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tassaragonzalez.GestorVentas.R
-import com.tassaragonzalez.GestorVentas.navigation.Screen
 import com.tassaragonzalez.GestorVentas.ui.theme.GestorVentasTheme
-import com.tassaragonzalez.GestorVentas.viewmodels.GestorVentasViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 // =================================================================================
-// --- SECCIÓN 1: La Pantalla Principal (Contenedor con Menú) ---
-// =================================================================================
-@OptIn(ExperimentalMaterial3Api::class)
+// --- SECCIÓN 1: La Pantalla Principal ---
+// =-===============================================================================
 @Composable
-fun HomeScreen(viewModel: GestorVentasViewModel) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            DrawerContent(viewModel = viewModel, drawerState = drawerState, scope = scope)
-        }
-    ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("¡Bienvenido a Neg!") },
-                    navigationIcon = {
-                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(imageVector = Icons.Default.Menu, contentDescription = "Menú")
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    )
-                )
-            }
-        ) { innerPadding ->
-            // Le pasamos la acción de navegación para la tarjeta de stock.
-            HomeContent(
-                innerPadding = innerPadding,
-                onLowStockClick = { viewModel.navigateTo(Screen.ProductsScreen) }
-            )
-        }
-    }
-}
-
-// =================================================================================
-// --- SECCIÓN 2: El Contenido del Menú Deslizable ---
-// =================================================================================
-@Composable
-fun DrawerContent(
-    viewModel: GestorVentasViewModel,
-    drawerState: DrawerState,
-    scope: CoroutineScope
-) {
-    ModalDrawerSheet {
-        Text("Menú Principal", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge)
-        Divider()
-        NavigationDrawerItem(
-            label = { Text(text = "Registrar Nuevo Cliente") },
-            selected = false,
-            onClick = {
-                scope.launch { drawerState.close() }
-                viewModel.navigateTo(Screen.RegisterClientScreen)
-            }
-        )
-        NavigationDrawerItem(
-            label = { Text(text = "Productos") },
-            selected = false,
-            onClick = {
-                scope.launch { drawerState.close() }
-                viewModel.navigateTo(Screen.ProductsScreen)
-            }
-        )
-        NavigationDrawerItem(
-            label = { Text(text = "Configuraciones") },
-            selected = false,
-            onClick = {
-                scope.launch { drawerState.close() }
-                viewModel.navigateTo(Screen.SettingsScreen)
-            }
-        )
-    }
-}
-
-// =================================================================================
-// --- SECCIÓN 3: El Contenido Visual de la Pantalla (Reordenado) ---
-// =================================================================================
-@Composable
-fun HomeContent(
-    innerPadding: PaddingValues,
-    onLowStockClick: () -> Unit // Recibe la acción de clic para la alerta
-) {
-
-    // 1. Creamos un "producto" especial que actúa como alerta.
+fun HomeScreen(onLowStockClick: () -> Unit) { // Solo necesita saber qué hacer al hacer clic
     val lowStockAlert = Product(
         name = "¡ALERTA! STOCK BAJO",
         price = "Revisar productos críticos",
-        imageRes = R.drawable.gestor // Puedes cambiar este ícono por uno de alerta si quieres
+        imageRes = R.drawable.gestor
     )
 
     Column(
         modifier = Modifier
-            .padding(innerPadding)
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        Spacer(modifier = Modifier.height(24.dp))
-
         Text(
             text = "REPORTE DE VENTAS CRÍTICOS",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFFD0BCFF)
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
         )
-        // 2. La alerta de stock ahora está arriba y es clickeable.
+        Spacer(modifier = Modifier.height(8.dp))
+
         ProductItem(
             product = lowStockAlert,
             onClick = onLowStockClick
         )
 
-
         Spacer(modifier = Modifier.height(24.dp))
-
 
         Text(
             text = "ANALISIS DE VENTAS DIARIAS",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold ,
-            color = Color(0xFFD0BCFF)
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
         )
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // 3. La tarjeta de análisis ahora está abajo y es solo informativa.
         SalesAnalyticsCard(percentage = 0.82f)
     }
 }
 
 // =================================================================================
-// --- SECCIÓN 4: Componentes Personalizados de la Pantalla ---
+// --- SECCIÓN 2: Componentes Personalizados y de la Lista ---
 // =================================================================================
 @Composable
-private fun SalesAnalyticsCard(percentage: Float) { // Ya no recibe 'onClick'
+private fun SalesAnalyticsCard(percentage: Float) {
     val animatedProgress by animateFloatAsState(
         targetValue = percentage,
         animationSpec = tween(durationMillis = 1500, delayMillis = 300),
         label = "salesAnimation"
     )
     Card(
-        modifier = Modifier.fillMaxWidth(), // Ya no tiene el .clickable
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
@@ -216,14 +118,14 @@ fun CylinderProgressBar(modifier: Modifier = Modifier, progress: Float, fillColo
 @Composable
 fun ProductItem(
     product: Product,
-    onClick: () -> Unit, // Recibe la acción de clic
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clickable { onClick() }, // Hace que toda la tarjeta sea clickeable
+            .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -247,7 +149,7 @@ fun ProductItem(
 }
 
 // =================================================================================
-// --- SECCIÓN 5: Modelo de Datos y Previsualización ---
+// --- SECCIÓN 3: Modelo de Datos y Previsualización ---
 // =================================================================================
 data class Product(val name: String, val price: String, val imageRes: Int)
 
@@ -255,9 +157,6 @@ data class Product(val name: String, val price: String, val imageRes: Int)
 @Composable
 fun HomeScreenPreview() {
     GestorVentasTheme {
-        HomeContent(
-            innerPadding = PaddingValues(0.dp),
-            onLowStockClick = {} // La preview funciona con una acción vacía
-        )
+        HomeScreen(onLowStockClick = {}) // La preview ahora es más simple
     }
 }

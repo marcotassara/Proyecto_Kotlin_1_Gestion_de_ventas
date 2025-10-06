@@ -38,7 +38,7 @@ fun RegisterScreen(viewModel: GestorVentasViewModel) {
         Button(onClick = { viewModel.navigateUp()  }, modifier = Modifier.fillMaxWidth()) {
             Text("OK")
         }
-        TextButton(onClick = { viewModel.navigateUp() }) { // Botón para volver
+        TextButton(onClick = { viewModel.navigateUp() }) {
             Text("Ya tengo una cuenta")
         }
     }
