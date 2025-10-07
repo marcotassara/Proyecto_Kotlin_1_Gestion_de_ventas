@@ -11,6 +11,7 @@ import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -28,7 +29,6 @@ import com.tassaragonzalez.GestorVentas.views.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import androidx.compose.material3.Text
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
 
-                // Escuchador de eventos
+                // Escuchador de eventos de navegación
                 LaunchedEffect(Unit) {
                     viewModel.navigationEvents.collectLatest { event ->
                         when (event) {
@@ -69,45 +69,44 @@ class MainActivity : ComponentActivity() {
                             scope = scope
                         )
                     }
-
                 ) {
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         topBar = {
-                            // Solo muestra la barra si no estamos en Login o Register
                             if (currentRoute != Screen.LoginScreen.route && currentRoute != Screen.RegisterScreen.route) {
                                 TopAppBar(
                                     title = {
-                                        // Título dinámico
                                         when (currentRoute) {
-                                            Screen.AddProductScreen.route -> Text("Agregar Producto")
                                             Screen.HomeScreen.route -> Text("¡Bienvenido a Neg!")
                                             Screen.ProductsScreen.route -> Text("Productos")
+                                            Screen.AddProductScreen.route -> Text("Agregar Producto")
                                             Screen.SettingsScreen.route -> Text("Configuraciones")
                                             Screen.RegisterClientScreen.route -> Text("Registrar Cliente")
+                                            Screen.AnalyticsScreen.route -> Text("Análisis de Ventas")
+                                            Screen.NotificationsScreen.route -> Text("Notificaciones")
                                             else -> Text("Gestor de Ventas")
                                         }
                                     },
                                     navigationIcon = {
-                                        // --- LÓGICA CORREGIDA ---
-                                        // Definimos las pantallas que son "principales" y llevan menú
                                         val isMainScreen = currentRoute == Screen.HomeScreen.route ||
                                                 currentRoute == Screen.ProductsScreen.route
 
                                         if (isMainScreen) {
-                                            // Si es una pantalla principal, muestra el Menú
                                             IconButton(onClick = { scope.launch { drawerState.open() } }) {
                                                 Icon(imageVector = Icons.Default.Menu, contentDescription = "Menú")
                                             }
                                         } else {
-                                            // Para CUALQUIER OTRA pantalla (AddProduct, Settings, etc.), muestra "Volver"
                                             IconButton(onClick = { viewModel.navigateUp() }) {
                                                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                                             }
                                         }
                                     },
                                     actions = {
-                                        // Acciones dinámicas (esto ya lo tenías bien)
+                                        if (currentRoute == Screen.HomeScreen.route || currentRoute == Screen.ProductsScreen.route) {
+                                            IconButton(onClick = { viewModel.navigateTo(Screen.NotificationsScreen) }) {
+                                                Icon(imageVector = Icons.Default.Notifications, contentDescription = "Notificaciones")
+                                            }
+                                        }
                                         if (currentRoute == Screen.ProductsScreen.route) {
                                             IconButton(onClick = { viewModel.navigateTo(Screen.HomeScreen) }) {
                                                 Icon(imageVector = Icons.Default.Home, contentDescription = "Inicio")
@@ -133,6 +132,8 @@ class MainActivity : ComponentActivity() {
                             composable(Screen.SettingsScreen.route) { SettingsScreen(viewModel = viewModel) }
                             composable(Screen.RegisterClientScreen.route) { RegisterClientScreen(viewModel = viewModel) }
                             composable(Screen.AddProductScreen.route) { AddProductScreen(viewModel = viewModel) }
+                            composable(Screen.AnalyticsScreen.route) { AnalyticsScreen() }
+                            composable(Screen.NotificationsScreen.route) { NotificationsScreen() }
                         }
                     }
                 }
@@ -151,40 +152,20 @@ fun DrawerContent(
     ModalDrawerSheet {
         Text("Menú Principal", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge)
         Divider()
-        NavigationDrawerItem(
-            label = { Text(text = "Registrar Nuevo Cliente") },
-            selected = false,
-            onClick = {
-                scope.launch { drawerState.close() }
-                viewModel.navigateTo(Screen.RegisterClientScreen)
-            }
-        )
-        NavigationDrawerItem(
-            label = { Text(text = "Productos") },
-            selected = false,
-            onClick = {
-                scope.launch { drawerState.close() }
-                viewModel.navigateTo(Screen.ProductsScreen)
-            }
-        )
-        NavigationDrawerItem(
-            label = { Text(text = "Configuraciones") },
-            selected = false,
-            onClick = {
-                scope.launch { drawerState.close() }
-                viewModel.navigateTo(Screen.SettingsScreen)
-            }
-        )
-        Divider() // Una línea para separar
+        NavigationDrawerItem(label = { Text(text = "Inicio") }, selected = false, onClick = { scope.launch { drawerState.close() }; viewModel.navigateTo(Screen.HomeScreen) })
+        NavigationDrawerItem(label = { Text(text = "Productos") }, selected = false, onClick = { scope.launch { drawerState.close() }; viewModel.navigateTo(Screen.ProductsScreen) })
+        NavigationDrawerItem(label = { Text(text = "Registrar Nuevo Cliente") }, selected = false, onClick = { scope.launch { drawerState.close() }; viewModel.navigateTo(Screen.RegisterClientScreen) })
+        NavigationDrawerItem(label = { Text(text = "Análisis de Ventas") }, selected = false, onClick = { scope.launch { drawerState.close() }; viewModel.navigateTo(Screen.AnalyticsScreen) })
+        NavigationDrawerItem(label = { Text(text = "Configuraciones") }, selected = false, onClick = { scope.launch { drawerState.close() }; viewModel.navigateTo(Screen.SettingsScreen) })
+        Divider()
         NavigationDrawerItem(
             label = { Text(text = "Cerrar Sesión") },
             icon = { Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Cerrar Sesión") },
             selected = false,
             onClick = {
                 scope.launch { drawerState.close() }
-                viewModel.onLogoutClick() // Llamamos a la nueva función
+                viewModel.onLogoutClick()
             }
         )
-        // 👆 --- FIN DEL NUEVO CÓDIGO --- 👆
     }
 }

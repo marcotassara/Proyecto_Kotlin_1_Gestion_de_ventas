@@ -11,6 +11,12 @@ sealed class Screen(val route: String) {
 
     data object AddProductScreen : Screen("add_product_screen")
 
+    data object AnalyticsScreen : Screen("analytics_screen")
+
+
+    data object NotificationsScreen : Screen("notifications_screen") // <-- AÑADE ESTA
+
+
 
     data class ProductDetailScreen(val productId: Long) : Screen("product_detail/{productId}") {
         fun buildRoute(): String {
