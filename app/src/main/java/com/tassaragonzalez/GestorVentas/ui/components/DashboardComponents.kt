@@ -66,6 +66,88 @@ fun SalesAnalyticsCard(percentage: Float) {
 }
 
 @Composable
-fun CylinderProgressBar(modifier: Modifier = Modifier, progress: Float, fillColors: List<Color>, containerColor: Color = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f), borderColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)) {
-    Canvas(modifier=modifier){val strokeWidth=2.dp.toPx();val ellipseHeight=16.dp.toPx();val bodyHeight=size.height-ellipseHeight;drawRect(color=containerColor,topLeft=Offset(x=0f,y=ellipseHeight/2),size=Size(width=size.width,height=bodyHeight));drawOval(color=containerColor,topLeft=Offset(x=0f,y=size.height-ellipseHeight),size=Size(width=size.width,height=ellipseHeight));val numLines=3;for(i in 1..numLines){val y=(bodyHeight/(numLines+1))*i+(ellipseHeight/2);drawLine(color=borderColor.copy(alpha=0.5f),start=Offset(x=strokeWidth,y=y),end=Offset(x=size.width-strokeWidth,y=y),strokeWidth=1.dp.toPx())};drawLine(color=borderColor,start=Offset(x=strokeWidth/2,y=ellipseHeight/2),end=Offset(x=strokeWidth/2,y=bodyHeight+ellipseHeight/2),strokeWidth=strokeWidth);drawLine(color=borderColor,start=Offset(x=size.width-strokeWidth/2,y=ellipseHeight/2),end=Offset(x=size.width-strokeWidth/2,y=bodyHeight+ellipseHeight/2),strokeWidth=strokeWidth);drawOval(color=borderColor,topLeft=Offset(x=0f,y=0f),size=Size(width=size.width,height=ellipseHeight),style=Stroke(width=strokeWidth));drawOval(color=borderColor,topLeft=Offset(x=0f,y=size.height-ellipseHeight),size=Size(width=size.width,height=ellipseHeight),style=Stroke(width=strokeWidth));val fillHeight=(size.height-ellipseHeight)*progress.coerceIn(0f,1f);val topOffset=(size.height-ellipseHeight)*(1f-progress.coerceIn(0f,1f))+(ellipseHeight/2);if(fillHeight>0){val inset=strokeWidth;val transparentFillColors=fillColors.map{it.copy(alpha=0.7f)};val gradientBrush=Brush.verticalGradient(colors=transparentFillColors,startY=topOffset,endY=size.height);drawRect(brush=gradientBrush,topLeft=Offset(x=inset,y=topOffset),size=Size(width=size.width-(inset*2),height=fillHeight));drawOval(brush=gradientBrush,topLeft=Offset(x=inset,y=size.height-ellipseHeight),size=Size(width=size.width-(inset*2),height=ellipseHeight));drawOval(brush=gradientBrush,topLeft=Offset(x=inset,y=topOffset-(ellipseHeight/2)),size=Size(width=size.width-(inset*2),height=ellipseHeight))}}
+fun CylinderProgressBar(modifier: Modifier = Modifier,
+                        progress: Float,
+                        fillColors: List<Color>,
+                        containerColor: Color = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+                        borderColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)) {
+    Canvas(modifier=modifier
+    ){val strokeWidth=2.dp.toPx(
+
+    );val ellipseHeight=16.dp.toPx(
+        
+    );val bodyHeight=size.height-ellipseHeight;
+        drawRect(color=containerColor,
+                     topLeft=Offset(
+                            x=0f,
+                            y=ellipseHeight/2),
+                     size=Size(width=size.width,
+                     height=bodyHeight));
+        drawOval(color=containerColor,
+                 topLeft=Offset(
+                     x=0f,
+                     y=size.height-ellipseHeight),
+                     size=Size(width=size.width,height=ellipseHeight));
+
+        val numLines=3;for(i in 1..numLines){
+            val y=(bodyHeight/(numLines+1))*i+(ellipseHeight/2);
+            drawLine(
+                color=borderColor.copy(alpha=0.5f),
+                start=Offset(x=strokeWidth,y=y),
+                end=Offset(x=size.width-strokeWidth,y=y),
+                strokeWidth=1.dp.toPx())};
+
+            drawLine(
+                color=borderColor,
+                start=Offset(x=strokeWidth/2,y=ellipseHeight/2),
+                end=Offset(x=strokeWidth/2,y=bodyHeight+ellipseHeight/2),
+                strokeWidth=strokeWidth);
+
+            drawLine(
+                color=borderColor,
+                start=Offset(x=size.width-strokeWidth/2,y=ellipseHeight/2),
+                end=Offset(x=size.width-strokeWidth/2,y=bodyHeight+ellipseHeight/2),
+                strokeWidth=strokeWidth);
+
+            drawOval(
+                color=borderColor,
+                topLeft=Offset(x=0f,y=0f),
+                size=Size(width=size.width,height=ellipseHeight),
+                style=Stroke(width=strokeWidth));
+
+            drawOval(
+                color=borderColor,
+                topLeft=Offset(x=0f,y=size.height-ellipseHeight),
+                size=Size(width=size.width,height=ellipseHeight),
+                style=Stroke(width=strokeWidth));
+
+        val fillHeight=(size.height-ellipseHeight)*progress.coerceIn(0f,1f);
+
+        val topOffset=(size.height-ellipseHeight)*(1f-progress.coerceIn(0f,1f))+(ellipseHeight/2);
+
+            if(fillHeight>0){
+                val inset=strokeWidth;
+                val transparentFillColors=fillColors.map{
+                    it.copy(alpha=0.7f)};
+                val gradientBrush=Brush.verticalGradient(
+                    colors=transparentFillColors,
+                    startY=topOffset,
+                    endY=size.height);
+
+                drawRect(
+                    brush=gradientBrush,
+                    topLeft=Offset(x=inset,y=topOffset),
+                    size=Size(width=size.width-(inset*2),height=fillHeight));
+
+                drawOval(
+                    brush=gradientBrush,
+                    topLeft=Offset(x=inset,y=size.height-ellipseHeight),
+                    size=Size(width=size.width-(inset*2),height=ellipseHeight));
+
+                drawOval(
+                    brush=gradientBrush,
+                    topLeft=Offset(x=inset,y=topOffset-(ellipseHeight/2)),
+                    size=Size(width=size.width-(inset*2),height=ellipseHeight))
+            }
+    }
 }

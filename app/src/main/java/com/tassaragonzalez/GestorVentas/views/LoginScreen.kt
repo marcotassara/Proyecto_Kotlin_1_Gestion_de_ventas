@@ -2,6 +2,7 @@ package com.tassaragonzalez.GestorVentas.views
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -14,8 +15,7 @@ import com.tassaragonzalez.GestorVentas.viewmodels.GestorVentasViewModel
 
 @Composable
 fun LoginScreen(viewModel: GestorVentasViewModel) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val state by viewModel.loginState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -29,8 +29,8 @@ fun LoginScreen(viewModel: GestorVentasViewModel) {
         Spacer(modifier = Modifier.height(32.dp))
 
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
+            value = state.username,
+            onValueChange = { viewModel.onLoginFieldChange("username", it) },
             label = { Text("Nombre de usuario") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -38,11 +38,23 @@ fun LoginScreen(viewModel: GestorVentasViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = state.password,
+            onValueChange = { viewModel.onLoginFieldChange("password", it) },
             label = { Text("Contraseña") },
             modifier = Modifier.fillMaxWidth()
         )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Checkbox(
+                checked = state.rememberSession,
+                onCheckedChange = {viewModel.onRememberSessionChange(it)}
+
+            )
+            Text("Mantener la sesión abierta")
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
 
