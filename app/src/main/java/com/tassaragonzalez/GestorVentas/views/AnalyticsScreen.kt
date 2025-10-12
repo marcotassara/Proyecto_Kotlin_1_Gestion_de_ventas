@@ -21,8 +21,10 @@ data class SaleSummary(val name: String, val quantity: Int, val profit: Int)
 
 @Composable
 fun AnalyticsScreen() {
-    // Datos de prueba que simularían la respuesta de tu backend
+   // Reutilización de la tabla del salesPercentage
     val salesPercentage = 0.82f
+
+    // Datos de prueba
     val saleSummaries = listOf(
         SaleSummary("Coca-cola", 2, 1500),
         SaleSummary("audifonos", 2, 4000),
@@ -36,12 +38,12 @@ fun AnalyticsScreen() {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // --- TARJETA DE ANÁLISIS DE VENTAS (reutilizamos la que ya teníamos) ---
+
         SalesAnalyticsCard(percentage = salesPercentage)
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // --- TABLA DE RESUMEN DE VENTAS ---
+
         Text(
             text = "Resumen de ventas",
             style = MaterialTheme.typography.titleLarge,
@@ -50,7 +52,7 @@ fun AnalyticsScreen() {
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Cabecera de la tabla
+
         Row(modifier = Modifier.fillMaxWidth()) {
             Text("Nombre", modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold)
             Text("Ventas", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
@@ -58,7 +60,7 @@ fun AnalyticsScreen() {
         }
         Divider(modifier = Modifier.padding(vertical = 4.dp))
 
-        // Contenido de la tabla
+
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {

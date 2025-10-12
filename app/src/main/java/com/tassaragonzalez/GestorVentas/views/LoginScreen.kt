@@ -28,6 +28,7 @@ fun LoginScreen(viewModel: GestorVentasViewModel) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
+
         OutlinedTextField(
             value = state.username,
             onValueChange = { viewModel.onLoginFieldChange("username", it) },
@@ -43,7 +44,6 @@ fun LoginScreen(viewModel: GestorVentasViewModel) {
             label = { Text("Contraseña") },
             modifier = Modifier.fillMaxWidth()
         )
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -66,7 +66,7 @@ fun LoginScreen(viewModel: GestorVentasViewModel) {
         }
 
 
-        TextButton(onClick = { viewModel.onRegisterClick() }) { // Llama a una nueva función
+        TextButton(onClick = { viewModel.onRegisterClick() }) {
             Text("¿No tienes cuenta? Regístrate")
         }
     }

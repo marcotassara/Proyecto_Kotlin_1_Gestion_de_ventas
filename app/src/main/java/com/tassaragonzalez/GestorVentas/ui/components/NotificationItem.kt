@@ -15,7 +15,7 @@ import com.tassaragonzalez.GestorVentas.model.NotificationType
 
 @Composable
 fun NotificationItem(notification: Notification) {
-    // Asigna un color a la tarjeta según el tipo de notificación
+
     val cardColor = when (notification.type) {
         NotificationType.SUCCESS -> Color(0xFFC8E6C9) // Verde pastel
         NotificationType.WARNING -> Color(0xFFFFF9C4) // Amarillo pastel

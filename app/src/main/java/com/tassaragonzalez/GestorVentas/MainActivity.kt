@@ -21,6 +21,7 @@
     import androidx.navigation.compose.composable
     import androidx.navigation.compose.currentBackStackEntryAsState
     import androidx.navigation.compose.rememberNavController
+    import com.tassaragonzalez.GestorVentas.data.SessionManager
     import com.tassaragonzalez.GestorVentas.navigation.NavigationEvent
     import com.tassaragonzalez.GestorVentas.navigation.Screen
     import com.tassaragonzalez.GestorVentas.ui.theme.GestorVentasTheme
@@ -37,6 +38,12 @@
             super.onCreate(savedInstanceState)
             setContent {
                 GestorVentasTheme {
+                    val sessionManager = SessionManager(applicationContext)
+                    val startRoute = if (sessionManager.isLoggedIn()) {
+                        Screen.HomeScreen.route
+                    } else {
+                        Screen.LoginScreen.route
+                    }
                     val factory = GestorVentasViewModelFactory(applicationContext)
                     val viewModel: GestorVentasViewModel = viewModel(factory = factory)
                     val navController = rememberNavController()
@@ -124,7 +131,7 @@
                         ) { innerPadding ->
                             NavHost(
                                 navController = navController,
-                                startDestination = Screen.LoginScreen.route,
+                                startDestination = startRoute,
                                 modifier = Modifier.padding(innerPadding)
                             ) {
                                 composable(Screen.LoginScreen.route) { LoginScreen(viewModel = viewModel) }
@@ -144,7 +151,7 @@
         }
     }
 
-    // Ponemos la función DrawerContent aquí para que MainActivity la encuentre
+
     @Composable
     fun DrawerContent(
         viewModel: GestorVentasViewModel,

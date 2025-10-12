@@ -16,7 +16,7 @@ import com.tassaragonzalez.GestorVentas.viewmodels.GestorVentasViewModel
 @Composable
 fun ProductsScreen(viewModel: GestorVentasViewModel) {
     DoublePressBackToExitHandler()
-    // "Escuchamos" los estados del ViewModel
+
     val searchQuery by viewModel.searchQuery.collectAsState()
     val filteredProducts by viewModel.filteredProducts.collectAsState()
 
@@ -25,7 +25,7 @@ fun ProductsScreen(viewModel: GestorVentasViewModel) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // --- BARRA DE BÚSQUEDA ---
+       // --- BARRA DE BÚSQUEDA ---
         OutlinedTextField(
             value = searchQuery,
             onValueChange = viewModel::onSearchQueryChanged,

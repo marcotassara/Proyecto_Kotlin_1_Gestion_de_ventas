@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,14 +15,13 @@ import com.tassaragonzalez.GestorVentas.viewmodels.GestorVentasViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddProductScreen(viewModel: GestorVentasViewModel) {
-    // Variables de estado para cada campo del formulario
     var nombre by remember { mutableStateOf("") }
     var marca by remember { mutableStateOf("") }
     var precioVenta by remember { mutableStateOf("") }
     var stock by remember { mutableStateOf("") }
     var accion by remember { mutableStateOf(false) }
 
-    // 👇 --- CONTENEDOR PRINCIPAL QUE FALTABA --- 👇
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -34,16 +31,16 @@ fun AddProductScreen(viewModel: GestorVentasViewModel) {
             )
         }
     ) { innerPadding ->
-        // 👇 --- CONTENEDOR VERTICAL QUE FALTABA --- 👇
+
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState()), // Permite deslizar si el formulario es muy largo
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // --- AQUÍ DENTRO VA TODO TU FORMULARIO ---
+
             OutlinedTextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth())
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(value = marca, onValueChange = { marca = it }, label = { Text("Marca") }, modifier = Modifier.fillMaxWidth())

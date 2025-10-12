@@ -12,7 +12,7 @@ import com.tassaragonzalez.GestorVentas.ui.components.NotificationItem
 
 @Composable
 fun NotificationsScreen() {
-    // Datos de prueba que simulan lo que vendría de tu microservicio
+    // Datos de prueba
     val notifications = listOf(
         Notification(1, "- Marco ha vendido una coca-cola", NotificationType.SUCCESS),
         Notification(2, "- Alcanzaste las ventas diarias", NotificationType.SUCCESS),

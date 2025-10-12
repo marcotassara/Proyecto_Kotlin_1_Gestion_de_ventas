@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.tassaragonzalez.GestorVentas.data.SessionManager
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.tassaragonzalez.GestorVentas.model.Product
 import com.tassaragonzalez.GestorVentas.model.state.LoginState
 import com.tassaragonzalez.GestorVentas.model.state.RegisterState
@@ -39,13 +38,15 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
         }
     }
 
+
     fun onLoginClick() {
         val currentState = _loginState.value
-        // En el futuro, aquí validarías 'currentState.username' y 'currentState.password' con el backend.
 
         if (currentState.rememberSession) {
-            sessionManager.saveSession(true) // Guarda la sesión si el checkbox está marcado
+            sessionManager.saveSession(true)
         }
+
+
 
         viewModelScope.launch {
             _navigationEvents.emit(
@@ -70,42 +71,39 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
         }
     }  // AUN NO SE USA ESTE BTN COMPAÑERO
 
-    // Dentro de la clase GestorVentasViewModel
+
     fun onLogoutClick() {
+
+        sessionManager.saveSession(false)
+
+
         viewModelScope.launch {
             _navigationEvents.emit(
                 NavigationEvent.NavigateTo(
                     route = Screen.LoginScreen,
-                    popUpToRoute = Screen.HomeScreen, // Limpia el historial HASTA HomeScreen
-                    inclusive = true // Le decimos que TAMBIÉN borre HomeScreen del historial
+                    popUpToRoute = Screen.HomeScreen,
+                    inclusive = true
                 )
             )
         }
     }
 
-    // 1. La lista "maestra" y privada de todos los productos.
     private val _allProducts = MutableStateFlow<List<Product>>(emptyList())
 
-    // 2. El texto de búsqueda actual. La UI lo leerá.
-    private val _searchQuery = MutableStateFlow("")
-    val searchQuery = _searchQuery.asStateFlow()
 
-    // 3. La lista FILTRADA de productos. Esta es la que la UI mostrará.
+
     private val _filteredProducts = MutableStateFlow<List<Product>>(emptyList())
     val filteredProducts = _filteredProducts.asStateFlow()
 
     init {
-        // Al iniciar el ViewModel, cargamos los productos de prueba.
+
         loadProducts()
     }
-   // Instanciamos el _registerStates; con private porque es el unico lugar donde va a estar en el gestor viewel
-    // el MVVM.
-    private val _registerState = MutableStateFlow(RegisterState())
-    val registerState = _registerState.asStateFlow()
+
 
 
     private fun loadProducts() {
-        // En el futuro, aquí harás la llamada a Retrofit para traer los productos reales.
+
         val testProducts = listOf(
             Product(1, "Coca-Cola 500ml", "Bebida gaseosa", 750.0, ""),
             Product(2, "Arroz Integral 1kg", "Arroz orgánico", 1500.0, ""),
@@ -116,12 +114,13 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
         _filteredProducts.value = testProducts // Al inicio, la lista filtrada es la lista completa.
     }
 
-    // La función que la UI llamará cada vez que el usuario escriba.
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = query
-        // Filtramos la lista maestra y actualizamos la lista filtrada.
+
         _filteredProducts.value = if (query.isBlank()) {
-            _allProducts.value // Si la búsqueda está vacía, muestra todos los productos
+            _allProducts.value
         } else {
             _allProducts.value.filter {
                 it.name.contains(query, ignoreCase = true) ||
@@ -129,6 +128,10 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
             }
         }
     }
+
+    // Instanciamos el _registerStates; con private porque es el unico lugar donde va a estar en el gestor viewel
+    private val _registerState = MutableStateFlow(RegisterState())
+    val registerState = _registerState.asStateFlow()
 
     // Creamos una funcion donde llamaremos a mi registro de estados anashei:
     fun onRegisterFieldChange(field: String, value: String) {
@@ -142,9 +145,9 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
         }
     }
 
-    // En GestorVentasViewModel.kt
 
-    // Esta es una función privada de ayuda para validar el email.
+
+    // Esta es una función privada de ayuda para validar el email. ashei
     private fun isValidEmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
@@ -190,6 +193,6 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
     fun onRememberSessionChange(isChecked: Boolean) {
         _loginState.value = _loginState.value.copy(rememberSession = isChecked)
     }
-}  // cierre de clase (class GestorVentasViewModel )
+}  // cierre de clase (class GestorVentasViewModel ) tip para que no se te olvide, no toques esa llave
 
 

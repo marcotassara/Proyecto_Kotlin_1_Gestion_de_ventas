@@ -115,16 +115,14 @@ fun ProductItem(
                     Text(text = product.description, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
                 }
             }
-            IconButton(onClick = { /* La acción principal está en la tarjeta */ }) {
-                Icon(imageVector = Icons.Default.AddShoppingCart, contentDescription = "Añadir al carrito")
-            }
+
+
         }
     }
 }
 
-// =================================================================================
-// --- SECCIÓN 3: Previsualización ---
-// =================================================================================
+// --- SECCIÓN 2 : Previsualización ---
+
 @Preview(showBackground = true, widthDp = 360, heightDp = 640)
 @Composable
 fun HomeScreenPreview() {
