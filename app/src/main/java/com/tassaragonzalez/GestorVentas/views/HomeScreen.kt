@@ -50,6 +50,9 @@ fun HomeScreen(onLowStockClick: () -> Unit) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+    val stock_bajo = true
+
+    if (stock_bajo){
         Text(
             text = "REPORTE DE VENTAS CRÍTICOS",
             style = MaterialTheme.typography.titleMedium,
@@ -59,11 +62,14 @@ fun HomeScreen(onLowStockClick: () -> Unit) {
 
         ProductItem(
             product = lowStockAlert,
-            onClick = onLowStockClick
+            onClick = {
+                // Aquí iría la lógica para "avisar al admin", que por ahora
+                // puede ser una navegación a la pantalla de Productos.
+                onLowStockClick()
+            }
         )
-
         Spacer(modifier = Modifier.height(24.dp))
-
+    }
         Text(
             text = "ANALISIS DE VENTAS DIARIAS",
             style = MaterialTheme.typography.titleMedium,

@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.tassaragonzalez.GestorVentas.data.SessionManager
+import com.tassaragonzalez.GestorVentas.model.Role
 import com.tassaragonzalez.GestorVentas.navigation.NavigationEvent
 import com.tassaragonzalez.GestorVentas.navigation.Screen
 import com.tassaragonzalez.GestorVentas.ui.theme.GestorVentasTheme
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
                 val scope = rememberCoroutineScope()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
+                val currentUser by viewModel.currentUser.collectAsState()
 
                 LaunchedEffect(Unit) {
                     viewModel.navigationEvents.collectLatest { event ->
@@ -128,10 +130,7 @@ class MainActivity : ComponentActivity() {
                                     actions = {
                                         if (currentRoute == Screen.HomeScreen.route || currentRoute == Screen.ProductsScreen.route) {
                                             IconButton(onClick = { viewModel.navigateTo(Screen.NotificationsScreen) }) {
-                                                Icon(
-                                                    imageVector = Icons.Default.Notifications,
-                                                    contentDescription = "Notificaciones"
-                                                )
+                                                Icon(imageVector = Icons.Default.Notifications, contentDescription = "Notificaciones")
                                             }
                                         }
                                         if (currentRoute == Screen.ProductsScreen.route) {
@@ -141,11 +140,10 @@ class MainActivity : ComponentActivity() {
                                                     contentDescription = "Inicio"
                                                 )
                                             }
+                                        }
+                                        if (currentRoute == Screen.ProductsScreen.route && currentUser?.role == Role.ADMIN){
                                             IconButton(onClick = { viewModel.navigateTo(Screen.AddProductScreen) }) {
-                                                Icon(
-                                                    imageVector = Icons.Default.Add,
-                                                    contentDescription = "Añadir"
-                                                )
+                                                Icon(imageVector = Icons.Default.Add, contentDescription = "Añadir")
                                             }
                                         }
                                     }
@@ -194,33 +192,51 @@ class MainActivity : ComponentActivity() {
         drawerState: DrawerState,
         scope: CoroutineScope
     ) {
+
+        val currentUser by viewModel.currentUser.collectAsState()
+
+
         ModalDrawerSheet {
             Text(
                 "Menú Principal",
                 modifier = Modifier.padding(16.dp),
                 style = MaterialTheme.typography.titleLarge
+
             )
             Divider()
             NavigationDrawerItem(
                 label = { Text(text = "Inicio") },
                 selected = false,
                 onClick = { scope.launch { drawerState.close() }; viewModel.navigateTo(Screen.HomeScreen) })
+
             NavigationDrawerItem(
                 label = { Text(text = "Productos") },
                 selected = false,
                 onClick = { scope.launch { drawerState.close() }; viewModel.navigateTo(Screen.ProductsScreen) })
-            NavigationDrawerItem(
-                label = { Text(text = "Registrar Nuevo Cliente") },
-                selected = false,
-                onClick = { scope.launch { drawerState.close() }; viewModel.navigateTo(Screen.RegisterClientScreen) })
+
+            if (currentUser?.role == Role.ADMIN) {
+                NavigationDrawerItem(
+                    label = { Text("Registrar Cliente") },
+                    selected = false,
+                    onClick = { scope.launch { drawerState.close() }; viewModel.navigateTo(Screen.RegisterClientScreen) })
+            }
+            if (currentUser?.role == Role.ADMIN) {
+                NavigationDrawerItem(
+                    label = { Text("Agregar Producto") },
+                    selected = false,
+                    onClick = { scope.launch { drawerState.close() }; viewModel.navigateTo(Screen.AddProductScreen) })
+            }
+
             NavigationDrawerItem(
                 label = { Text(text = "Análisis de Ventas") },
                 selected = false,
                 onClick = { scope.launch { drawerState.close() }; viewModel.navigateTo(Screen.AnalyticsScreen) })
+
             NavigationDrawerItem(
                 label = { Text(text = "Configuraciones") },
                 selected = false,
                 onClick = { scope.launch { drawerState.close() }; viewModel.navigateTo(Screen.SettingsScreen) })
+
             Divider()
             NavigationDrawerItem(
                 label = { Text(text = "Cerrar Sesión") },

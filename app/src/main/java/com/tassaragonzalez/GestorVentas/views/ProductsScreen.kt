@@ -25,15 +25,12 @@ fun ProductsScreen(viewModel: GestorVentasViewModel) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-       // --- BARRA DE BÚSQUEDA ---
+
         OutlinedTextField(
             value = searchQuery,
             onValueChange = viewModel::onSearchQueryChanged,
             label = { Text("Buscar producto...") },
-
-            // 👇 --- ESTA ES LA LÍNEA QUE FALTABA --- 👇
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Icono de Búsqueda") },
-
             modifier = Modifier.fillMaxWidth()
         )
 

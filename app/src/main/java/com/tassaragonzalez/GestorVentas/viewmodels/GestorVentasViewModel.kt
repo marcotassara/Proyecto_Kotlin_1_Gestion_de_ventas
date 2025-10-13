@@ -28,6 +28,11 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
         User(3, "inactivo", "123456", Role.VENDEDOR, false)
     )
 
+    // En GestorVentasViewModel.kt
+
+    private val _currentUser = MutableStateFlow<User?>(null)
+    val currentUser = _currentUser.asStateFlow()
+
     // --- ESTADOS DE LA UI ---
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
@@ -77,6 +82,8 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
                 _loginState.value = currentState.copy(error = "El usuario está inactivo")
                 return@launch
             }
+
+            _currentUser.value = user
 
             if (currentState.rememberSession) {
                 sessionManager.saveSession(true)
@@ -177,6 +184,7 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
 
     fun onLogoutClick() {
         sessionManager.saveSession(false)
+        _currentUser.value = null
         viewModelScope.launch {
             _navigationEvents.emit(
                 NavigationEvent.NavigateTo(
@@ -186,5 +194,12 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
                 )
             )
         }
+    }
+
+    fun notifyAdminOfLowStock() {
+        // En el futuro, esta función llamará al microservicio de notificaciones.
+        // Por ahora, simulamos la acción con un mensaje.
+        println("NOTIFICACIÓN: ¡El vendedor ha reportado stock bajo!")
+        // Opcional: Podríamos emitir un evento para mostrar un Toast de confirmación en la UI.
     }
 }
