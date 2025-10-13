@@ -17,7 +17,11 @@ import androidx.compose.ui.unit.dp
 import com.tassaragonzalez.GestorVentas.ui.theme.GestorVentasTheme
 
 // Modelo de datos de prueba para el resumen de ventas
-data class SaleSummary(val name: String, val quantity: Int, val profit: Int)
+data class SaleSummary(
+    val name: String,
+    val quantity: Int,
+    val profit: Int
+)
 
 @Composable
 fun AnalyticsScreen() {

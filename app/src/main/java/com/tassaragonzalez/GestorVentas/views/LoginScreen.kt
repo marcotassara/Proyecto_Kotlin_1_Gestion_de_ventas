@@ -1,15 +1,11 @@
 package com.tassaragonzalez.GestorVentas.views
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.tassaragonzalez.GestorVentas.viewmodels.GestorVentasViewModel
 
@@ -25,38 +21,48 @@ fun LoginScreen(viewModel: GestorVentasViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Login / Register", style = MaterialTheme.typography.headlineLarge)
-
         Spacer(modifier = Modifier.height(32.dp))
-
 
         OutlinedTextField(
             value = state.username,
             onValueChange = { viewModel.onLoginFieldChange("username", it) },
             label = { Text("Nombre de usuario") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = state.error != null
         )
-
         Spacer(modifier = Modifier.height(16.dp))
-
         OutlinedTextField(
             value = state.password,
             onValueChange = { viewModel.onLoginFieldChange("password", it) },
             label = { Text("Contraseña") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = state.error != null,
+            visualTransformation = PasswordVisualTransformation()
         )
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             Checkbox(
                 checked = state.rememberSession,
-                onCheckedChange = {viewModel.onRememberSessionChange(it)}
-
+                onCheckedChange = { viewModel.onRememberSessionChange(it) }
             )
             Text("Mantener la sesión abierta")
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+
+        // Muestra el mensaje de error si existe
+        val error = state.error
+        if (error != null) {
+            Text(
+                text = error, // Usamos la copia local segura
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = { viewModel.onLoginClick() },
@@ -64,8 +70,6 @@ fun LoginScreen(viewModel: GestorVentasViewModel) {
         ) {
             Text("Ingresar")
         }
-
-
         TextButton(onClick = { viewModel.onRegisterClick() }) {
             Text("¿No tienes cuenta? Regístrate")
         }

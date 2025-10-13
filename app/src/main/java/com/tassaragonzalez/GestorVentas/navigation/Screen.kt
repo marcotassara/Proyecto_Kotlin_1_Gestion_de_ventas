@@ -14,7 +14,9 @@ sealed class Screen(val route: String) {
     data object AnalyticsScreen : Screen("analytics_screen")
 
 
-    data object NotificationsScreen : Screen("notifications_screen") // <-- AÑADE ESTA
+    data object NotificationsScreen : Screen("notifications_screen")
+
+    data object AdminScreen : Screen("admin_screen")
 
 
 

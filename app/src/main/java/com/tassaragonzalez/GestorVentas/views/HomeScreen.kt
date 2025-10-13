@@ -30,13 +30,11 @@ import com.tassaragonzalez.GestorVentas.model.Product
 import com.tassaragonzalez.GestorVentas.ui.components.DoublePressBackToExitHandler
 import com.tassaragonzalez.GestorVentas.ui.theme.GestorVentasTheme
 
-// =================================================================================
-// --- SECCIÓN 1: La Pantalla Principal ---
-// =================================================================================
+
 @Composable
 fun HomeScreen(onLowStockClick: () -> Unit) {
     DoublePressBackToExitHandler()
-    // Datos de prueba para la alerta de stock bajo
+
     val lowStockAlert = Product(
         id = -1L,
         name = "¡ALERTA! STOCK BAJO",
@@ -121,7 +119,7 @@ fun ProductItem(
     }
 }
 
-// --- SECCIÓN 2 : Previsualización ---
+
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 640)
 @Composable

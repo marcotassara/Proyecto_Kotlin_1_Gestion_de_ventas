@@ -41,9 +41,19 @@ fun AddProductScreen(viewModel: GestorVentasViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            OutlinedTextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(
+                value = nombre,
+                onValueChange = { nombre = it },
+                label = { Text("Nombre") },
+                modifier = Modifier.fillMaxWidth())
+
             Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = marca, onValueChange = { marca = it }, label = { Text("Marca") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(
+                value = marca,
+                onValueChange = { marca = it },
+                label = { Text("Marca") },
+                modifier = Modifier.fillMaxWidth())
+
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = precioVenta,
