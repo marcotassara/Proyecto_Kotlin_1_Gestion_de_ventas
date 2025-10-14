@@ -1,6 +1,7 @@
 package com.tassaragonzalez.GestorVentas.viewmodels
 
 import android.content.Context
+import android.service.autofill.Field
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tassaragonzalez.GestorVentas.R
@@ -8,6 +9,7 @@ import com.tassaragonzalez.GestorVentas.data.SessionManager
 import com.tassaragonzalez.GestorVentas.model.Product
 import com.tassaragonzalez.GestorVentas.model.Role
 import com.tassaragonzalez.GestorVentas.model.User
+import com.tassaragonzalez.GestorVentas.model.state.AddProductState
 import com.tassaragonzalez.GestorVentas.model.state.LoginState
 import com.tassaragonzalez.GestorVentas.model.state.RegisterState
 import com.tassaragonzalez.GestorVentas.navigation.NavigationEvent
@@ -53,13 +55,29 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
 
     init {
         loadProducts()
+
+        if (sessionManager.isLoggedIn()) {
+            val role = sessionManager.getRole()
+            if (role != null) {
+                // En una app real, aquí buscaríamos el usuario completo en el backend.
+                // Para nuestra simulación, buscamos en la lista de usuarios de prueba.
+                val user = simulatedUsers.find { it.role == role }
+                _currentUser.value = user
+            }
+        }
     }
 
     // --- LÓGICA DE LOGIN ---
     fun onLoginFieldChange(field: String, value: String) {
         _loginState.value = when (field) {
-            "username" -> _loginState.value.copy(username = value, error = null) // Limpia el error al escribir
-            "password" -> _loginState.value.copy(password = value, error = null) // Limpia el error al escribir
+            "username" -> _loginState.value.copy(
+                username = value,
+                error = null
+            ) // Limpia el error al escribir
+            "password" -> _loginState.value.copy(
+                password = value,
+                error = null
+            ) // Limpia el error al escribir
             else -> _loginState.value
         }
     }
@@ -71,7 +89,8 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
     fun onLoginClick() {
         viewModelScope.launch {
             val currentState = _loginState.value
-            val user = simulatedUsers.find { it.username == currentState.username && it.password == currentState.password }
+            val user =
+                simulatedUsers.find { it.username == currentState.username && it.password == currentState.password }
 
             if (user == null) {
                 _loginState.value = currentState.copy(error = "Credenciales incorrectas")
@@ -86,7 +105,7 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
             _currentUser.value = user
 
             if (currentState.rememberSession) {
-                sessionManager.saveSession(true)
+                sessionManager.saveSession(true, user.role)
             }
 
             val destination = if (user.role == Role.ADMIN) Screen.AdminScreen else Screen.HomeScreen
@@ -108,7 +127,11 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
             "age" -> _registerState.value.copy(age = value, ageError = null)
             "email" -> _registerState.value.copy(email = value, emailError = null)
             "password" -> _registerState.value.copy(password = value, passwordError = null)
-            "confirmPassword" -> _registerState.value.copy(confirmPassword = value, confirmPasswordError = null)
+            "confirmPassword" -> _registerState.value.copy(
+                confirmPassword = value,
+                confirmPasswordError = null
+            )
+
             else -> _registerState.value
         }
     }
@@ -121,10 +144,19 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
         val currentState = _registerState.value
         val nameError = if (currentState.name.isBlank()) "El nombre no puede estar vacío" else null
         val ageError = if (currentState.age.isBlank()) "La edad no puede estar vacía" else null
-        val emailError = if (!isValidEmail(currentState.email)) "El formato del email no es válido" else null
-        val passwordError = if (currentState.password.length < 6) "La contraseña debe tener al menos 6 caracteres" else null
-        val confirmPasswordError = if (currentState.password != currentState.confirmPassword) "Las contraseñas no coinciden" else null
-        val hasError = listOf(nameError, ageError, emailError, passwordError, confirmPasswordError).any { it != null }
+        val emailError =
+            if (!isValidEmail(currentState.email)) "El formato del email no es válido" else null
+        val passwordError =
+            if (currentState.password.length < 6) "La contraseña debe tener al menos 6 caracteres" else null
+        val confirmPasswordError =
+            if (currentState.password != currentState.confirmPassword) "Las contraseñas no coinciden" else null
+        val hasError = listOf(
+            nameError,
+            ageError,
+            emailError,
+            passwordError,
+            confirmPasswordError
+        ).any { it != null }
 
         _registerState.value = currentState.copy(
             nameError = nameError,
@@ -164,8 +196,55 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
         }
     }
 
+
+    // Agregar productos sección anashei
+    private val _addProductState = MutableStateFlow(AddProductState())
+    val addProductState = _addProductState.asStateFlow()
+
+    fun onAddProductFieldChange(
+        field: String,
+        value : String
+    ){
+        _addProductState.value = when (field) {
+            "nombre" -> _addProductState.value.copy(nombre = value)
+            "marca"  -> _addProductState.value.copy(marca = value)
+            "precioVenta" -> _addProductState.value.copy(precioVenta = value)
+            "stock" -> _addProductState.value.copy(stock = value)
+            else -> _addProductState.value
+        }
+
+    }
+
+    fun onAddProductSubmit(){
+        val state = _addProductState.value
+        val nombreError = if (state.nombre.isBlank()) "El nombre es obligatorio" else null
+        val marcaError = if (state.marca.isBlank()) "La marca es obligatoria" else null
+
+        _addProductState.value = state.copy(
+            nombreError = nombreError,
+            marcaError = marcaError
+            // pueden haber más validaciones
+
+        )
+
+        val hasError = listOf(nombreError, marcaError).any {it != null}
+        if (!hasError) {
+            println(" PRODUCTO VÁLIDO, Listo para enviar al backend: $state")
+            navigateUp()
+        }
+    }
+
+    fun onAddProductActiveChange(isActive: Boolean) {
+        _addProductState.value = _addProductState.value.copy(isActive = isActive)
+    }
+
     // --- LÓGICA GENERAL DE NAVEGACIÓN ---
-    fun navigateTo(screen: Screen, popUpToRoute: Screen? = null, inclusive: Boolean = false, singleTop: Boolean = false) {
+    fun navigateTo(
+        screen: Screen,
+        popUpToRoute: Screen? = null,
+        inclusive: Boolean = false,
+        singleTop: Boolean = false
+    ) {
         viewModelScope.launch {
             _navigationEvents.emit(
                 NavigationEvent.NavigateTo(
@@ -178,12 +257,20 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun navigateUp() { viewModelScope.launch { _navigationEvents.emit(NavigationEvent.NavigateUp) } }
-    fun onRegisterClick() { viewModelScope.launch { _navigationEvents.emit(NavigationEvent.NavigateTo(Screen.RegisterScreen)) } }
-    fun onAddProductClick() { viewModelScope.launch { _navigationEvents.emit(NavigationEvent.NavigateTo(Screen.AddProductScreen)) } }
+    fun navigateUp() {
+        viewModelScope.launch { _navigationEvents.emit(NavigationEvent.NavigateUp) }
+    }
+
+    fun onRegisterClick() {
+        viewModelScope.launch { _navigationEvents.emit(NavigationEvent.NavigateTo(Screen.RegisterScreen)) }
+    }
+
+    fun onAddProductClick() {
+        viewModelScope.launch { _navigationEvents.emit(NavigationEvent.NavigateTo(Screen.AddProductScreen)) }
+    }
 
     fun onLogoutClick() {
-        sessionManager.saveSession(false)
+        sessionManager.saveSession(false, null)
         _currentUser.value = null
         viewModelScope.launch {
             _navigationEvents.emit(
@@ -196,10 +283,12 @@ class GestorVentasViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun notifyAdminOfLowStock() {
-        // En el futuro, esta función llamará al microservicio de notificaciones.
-        // Por ahora, simulamos la acción con un mensaje.
-        println("NOTIFICACIÓN: ¡El vendedor ha reportado stock bajo!")
-        // Opcional: Podríamos emitir un evento para mostrar un Toast de confirmación en la UI.
+    fun onNotifyAdminForLowStock() {
+        // En el futuro, aquí haríamos una llamada al microservicio de Notificaciones.
+        // Por ahora, simulamos la acción.
+        println("AVISO: El vendedor ${currentUser.value?.username} ha notificado sobre el stock bajo.")
+
+        // También podemos navegar a la pantalla de productos para que el vendedor vea el detalle.
+        navigateTo(Screen.ProductsScreen)
     }
 }

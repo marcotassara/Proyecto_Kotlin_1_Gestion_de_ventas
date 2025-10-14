@@ -27,10 +27,13 @@ fun LoginScreen(viewModel: GestorVentasViewModel) {
             value = state.username,
             onValueChange = { viewModel.onLoginFieldChange("username", it) },
             label = { Text("Nombre de usuario") },
+
             modifier = Modifier.fillMaxWidth(),
             isError = state.error != null
         )
+        Text("Usuarios de prueba: vendedor, admin ")
         Spacer(modifier = Modifier.height(16.dp))
+
         OutlinedTextField(
             value = state.password,
             onValueChange = { viewModel.onLoginFieldChange("password", it) },
@@ -39,6 +42,8 @@ fun LoginScreen(viewModel: GestorVentasViewModel) {
             isError = state.error != null,
             visualTransformation = PasswordVisualTransformation()
         )
+        Text("Contraseña: 123456")
+        Spacer(modifier = Modifier.height(16.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),

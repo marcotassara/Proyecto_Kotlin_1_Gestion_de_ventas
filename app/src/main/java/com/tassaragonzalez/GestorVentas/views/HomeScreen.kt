@@ -8,7 +8,9 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material3.*
@@ -34,53 +36,56 @@ import com.tassaragonzalez.GestorVentas.ui.theme.GestorVentasTheme
 @Composable
 fun HomeScreen(onLowStockClick: () -> Unit) {
     DoublePressBackToExitHandler()
-
-    val lowStockAlert = Product(
-        id = -1L,
-        name = "¡ALERTA! STOCK BAJO",
-        description = "Hay productos con niveles de stock críticos.",
-        price = 0.0,
-        imageUrl = "",
-        imageRes = R.drawable.gestor
-    )
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-    val stock_bajo = true
-
-    if (stock_bajo){
-        Text(
-            text = "REPORTE DE VENTAS CRÍTICOS",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
+    Column (
+        // 👇 --- CAMBIO 2: Hacemos que la Column sea deslizable --- 👇
+        modifier = Modifier.verticalScroll(rememberScrollState())
+    ){
+        val lowStockAlert = Product(
+            id = -1L,
+            name = "¡ALERTA! STOCK BAJO",
+            description = "Hay productos con niveles de stock críticos.",
+            price = 0.0,
+            imageUrl = "",
+            imageRes = R.drawable.gestor
         )
-        Spacer(modifier = Modifier.height(8.dp))
 
-        ProductItem(
-            product = lowStockAlert,
-            onClick = {
-                // Aquí iría la lógica para "avisar al admin", que por ahora
-                // puede ser una navegación a la pantalla de Productos.
-                onLowStockClick()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            val stock_bajo = true
+
+            if (stock_bajo) {
+                Text(
+                    text = "REPORTE DE VENTAS CRÍTICOS",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ProductItem(
+                    product = lowStockAlert,
+                    onClick = {
+                        // Aquí iría la lógica para "avisar al admin", que por ahora
+                        // puede ser una navegación a la pantalla de Productos.
+                        onLowStockClick()
+                    }
+                )
+                Spacer(modifier = Modifier.height(24.dp))
             }
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-    }
-        Text(
-            text = "ANALISIS DE VENTAS DIARIAS",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "ANALISIS DE VENTAS DIARIAS",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        SalesAnalyticsCard(percentage = 0.82f)
+            SalesAnalyticsCard(percentage = 0.82f)
+        }
     }
 }
-
 
 
 @Composable

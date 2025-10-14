@@ -15,12 +15,7 @@ import com.tassaragonzalez.GestorVentas.viewmodels.GestorVentasViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddProductScreen(viewModel: GestorVentasViewModel) {
-    var nombre by remember { mutableStateOf("") }
-    var marca by remember { mutableStateOf("") }
-    var precioVenta by remember { mutableStateOf("") }
-    var stock by remember { mutableStateOf("") }
-    var accion by remember { mutableStateOf(false) }
-
+    val state by viewModel.addProductState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -42,31 +37,65 @@ fun AddProductScreen(viewModel: GestorVentasViewModel) {
         ) {
 
             OutlinedTextField(
-                value = nombre,
-                onValueChange = { nombre = it },
+                value = state.nombre,
+                onValueChange = { viewModel.onAddProductFieldChange("nombre", it)},
                 label = { Text("Nombre") },
-                modifier = Modifier.fillMaxWidth())
+                isError = state.nombreError != null,
+                supportingText = {
+                    state.nombreError?.let {
+                        Text(
+                            it,
+                            color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
+
             OutlinedTextField(
-                value = marca,
-                onValueChange = { marca = it },
+                value = state.marca,
+                onValueChange = { viewModel.onAddProductFieldChange("marca", it)  },
                 label = { Text("Marca") },
+                isError = state.marcaError != null,
+                supportingText = {
+                    state.marcaError?.let {
+                        Text(
+                            it,
+                            color = MaterialTheme.colorScheme.error)
+                    }
+                },
                 modifier = Modifier.fillMaxWidth())
 
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
-                value = precioVenta,
-                onValueChange = { precioVenta = it },
+                value = state.precioVenta,
+                onValueChange = { viewModel.onAddProductFieldChange("precio venta", it ) },
                 label = { Text("Precio Venta") },
+                isError = state.precioVentaError != null,
+                supportingText = {
+                    state.precioVentaError?.let {
+                        Text(
+                            it,
+                            color = MaterialTheme.colorScheme.error)
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
-                value = stock,
-                onValueChange = { stock = it },
+                value = state.stock,
+                onValueChange = { viewModel.onAddProductFieldChange("stock", it)  },
                 label = { Text("Stock") },
+                isError = state.stockError != null,
+                supportingText = {
+                    state.stockError?.let {
+                        Text(
+                            it,
+                            color = MaterialTheme.colorScheme.error)
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
@@ -78,12 +107,13 @@ fun AddProductScreen(viewModel: GestorVentasViewModel) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text("Acción (Activo/Inactivo)")
-                Switch(checked = accion, onCheckedChange = { accion = it })
+                Switch(checked = state.isActive, onCheckedChange = { viewModel.onAddProductActiveChange(it) })
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Button(onClick = { /* Lógica futura para guardar el producto */ }, modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = { viewModel.onAddProductSubmit()},
+                modifier = Modifier.fillMaxWidth()) {
                 Text("Guardar Producto")
             }
         }

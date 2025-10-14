@@ -1,9 +1,11 @@
 package com.tassaragonzalez.GestorVentas.views
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -14,15 +16,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tassaragonzalez.GestorVentas.navigation.Screen
+import com.tassaragonzalez.GestorVentas.ui.components.DoublePressBackToExitHandler
 import com.tassaragonzalez.GestorVentas.ui.theme.GestorVentasTheme
 import com.tassaragonzalez.GestorVentas.viewmodels.GestorVentasViewModel
 
 @Composable
 fun AdminScreen(viewModel: GestorVentasViewModel) {
+    DoublePressBackToExitHandler() // Le añadimos el doble toque para salir
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()), // Hacemos que sea deslizable si hay muchas opciones
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
@@ -50,7 +56,15 @@ fun AdminScreen(viewModel: GestorVentasViewModel) {
             )
         }
 
-        // Aquí podrías añadir más tarjetas o resúmenes para el admin
+        // --- NUEVA TARJETA AÑADIDA ---
+        AdminActionCard(
+            modifier = Modifier.fillMaxWidth(), // Ocupa todo el ancho
+            title = "Gestionar Vendedores",
+            icon = Icons.Default.Group,
+            onClick = { /* Acción futura para ver/editar vendedores */ }
+        )
+
+        // Aquí podrías añadir más tarjetas, como "Ver Reportes" o "Configuración General"
     }
 }
 
@@ -63,7 +77,7 @@ private fun AdminActionCard(
     onClick: () -> Unit
 ) {
     Card(
-        modifier = modifier.height(120.dp),
+        modifier = modifier.heightIn(min = 120.dp), // Altura mínima
         onClick = onClick,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -83,6 +97,8 @@ private fun AdminActionCard(
 @Composable
 fun AdminScreenPreview() {
     GestorVentasTheme {
-
+        // Para la preview, necesitaríamos un ViewModel falso.
+        // Por ahora, podemos comentar la llamada para ver el diseño estático.
+        // AdminScreen(viewModel = ...)
     }
 }
